@@ -1,75 +1,75 @@
+<template>
+  <p>{{ myGameData.energy.amount }}</p>
+  <button @click="clickHellishEnergy()">Click</button>
+  <button @click="__functionNameHere__()">More speed! {{ myGameData.energy.moreSpeedCost }}</button>
+</template>
+
+
+
+
 <script setup>
+//setup variables
 import { ref, onMounted, onBeforeUnmount } from 'vue';
 
-const number = ref(0)
+//declare previous time variable
+let previousTime = 0;
+//declare time accumilation Variable
+let timeAccumilation = 0;
 
 
-function mainGameLoop(){
-  const mainGameLoop = setInterval(() => {
-  seepHellishEnergy();
-}, 1000);
+//game object
+const myGameData = ref({
+  energy: {
+    amount: 0,
+    perSecond: 1,
+    perClick: 1,
+    moreSpeedCost: 10,
+  }
+})
+
+function mainGameLoop() {
+  const intervalId = setInterval(() => {
+    const currentTime = performance.now();
+    console.log("current =", currentTime);
+
+    //increment time accumilation
+    timeAccumilation += currentTime - previousTime;
+
+    // wrap game logic in if statement to run if timeAccumilation >= 1000
+    if (timeAccumilation >= 1000) {
+      // Update game logic here
+      seepHellishEnergy();
+    
+      //reset time accumilation 
+      timeAccumilation = 0;
+    }
+    
+    // Update the previousTime for the next iteration
+    previousTime = currentTime;
+  }, 500);
+  
+  onBeforeUnmount(() => {
+    clearInterval(intervalId);
+  });
 }
 
-onMounted(){
-  mainGameLoop
+onMounted(() => {
+  mainGameLoop();
+});
+
+
+function seepHellishEnergy() {
+  // Calculate energy per second and add it to the energy
+  myGameData.value.energy.amount += myGameData.value.energy.perSecond;
+  console.log("Energy PS",myGameData.value.energy.perSecond);  
 }
 
-function seepHellishEnergy(){
-  number += 1
+function clickHellishEnergy() {
+  myGameData.value.energy.amount += myGameData.value.energy.perClick;
 }
-
 
 
 
 </script>
 
 
-
-
-
-
-
-
-
-<template>
-    <p>{{ number }}</p>
-    <button @click="number++">Click</button>
-</template>
-
-
-
-
-  <script setup>
-  import { ref, onMounted, onBeforeUnmount } from 'vue';
-  
-  const intervalId = ref(null);
-  
-  // Function to run at a regular interval
-  function runFunction() {
-    // Your code here
-    console.log('Function executed at an interval');
-    intervalId.value = requestAnimationFrame(runFunction);
-  }
-  
-  // Start the interval when the component is mounted
-  onMounted(() => {
-    intervalId.value = requestAnimationFrame(runFunction);
-  });
-  
-  // Stop the interval when the component is unmounted to prevent memory leaks
-  onBeforeUnmount(() => {
-    cancelAnimationFrame(intervalId.value);
-  });
-  </script>
-  
-
-
-
-
-
-
-
-
-
-<style scoped>
-</style>
