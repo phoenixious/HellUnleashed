@@ -1,7 +1,7 @@
 <template>
   <p>{{ myGameData.energy.amount }}</p>
   <button @click="clickHellishEnergy()">Click</button>
-  <button @click="__functionNameHere__()">More speed! {{ myGameData.energy.moreSpeedCost }}</button>
+  <button @click="moreSpeed()">More speed! {{ myGameData.energy.moreSpeedCost }}</button>
 </template>
 
 
@@ -68,7 +68,13 @@ function clickHellishEnergy() {
   myGameData.value.energy.amount += myGameData.value.energy.perClick;
 }
 
-
+function moreSpeed() {
+  if (myGameData.value.energy.amount >= myGameData.value.energy.moreSpeedCost) {
+    myGameData.value.energy.amount -= myGameData.value.energy.moreSpeedCost;
+    myGameData.value.energy.moreSpeedCost *= 2;
+    myGameData.value.energy.perSecond += 1;
+  }
+}
 
 </script>
 
